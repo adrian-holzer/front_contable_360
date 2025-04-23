@@ -4,6 +4,7 @@ import Operativo from '../components/Operativo';
 import Configuraciones from '../components/Configuraciones';
 import ListaObligaciones from '../components/ListaObligaciones';
 import NuevaObligacionPage from '../components/NuevaObligacionPage';
+import AsignarCliente from './AsignarCliente';
 
 export const AppRoutes = () => {
     return (
@@ -12,6 +13,9 @@ export const AppRoutes = () => {
             <Route path="/configuraciones" element={<Configuraciones />} />
             <Route path="/obligaciones" element={<ListaObligaciones />} />
             <Route path="/nueva-obligacion" element={<NuevaObligacionPage />} />
+
+            <Route path="/asignar-cliente" element={<AsignarCliente />} />
+
             <Route path="/" element={<Operativo />} /> {/* Ruta por defecto */}
             {/* Otras rutas de tu aplicación */}
         </Routes>

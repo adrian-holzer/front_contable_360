@@ -4,6 +4,7 @@ import { Eye, Plus, X, Search } from 'lucide-react'; // Importa el icono de Sear
 import { API_BASE_URL } from '../config/config';
 import CargarExcel from './CargarExcel';
 import NuevaObligacion from './NuevaObligacion'; // Importa NuevaObligacion
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 
 interface VencimientoData {
   id: number;
@@ -37,6 +38,11 @@ const ListaObligaciones: React.FC = () => {
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(''); // Estado para el término de búsqueda
   const [filteredObligaciones, setFilteredObligaciones] = useState<Obligacion[]>([]);
+ const navigate = useNavigate();
+
+
+
+
 
   const fetchObligaciones = useCallback(async () => {
     setLoadingObligaciones(true);
@@ -54,6 +60,10 @@ const ListaObligaciones: React.FC = () => {
   }, []);
 
   const handleCrearNuevaObligacionClick = () => {
+   
+   navigate('/nueva-obligacion');
+   
+   
     // Lógica para crear una nueva obligación (puedes usar navigate('/nueva-obligacion'))
   };
 

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Plus } from 'lucide-react';
-import { API_BASE_URL } from '../config/config'; // Asegúrate de tener esta ruta correcta
+import { API_BASE_URL } from '../config/config';
 
 interface NuevaObligacionProps {
-  onObligacionCreated?: () => void; // Prop opcional para notificar la creación exitosa
-  onCreationError?: (error: string) => void; // Prop opcional para notificar errores
+  onObligacionCreated?: () => void;
+  onCreationError?: (error: string) => void;
 }
 
 interface VencimientoForm {
@@ -15,8 +15,8 @@ interface VencimientoForm {
 }
 
 const meses = [
-  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+  "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
 ];
 
 const terminacionesCuit = Array.from({ length: 10 }, (_, i) => i);
@@ -95,8 +95,7 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
   };
 
   return (
-    <div className="bg-white shadow-md rounded-md p-4 md:p-6"> {/* Añadido padding responsivo */}
-      <h2 className="text-xl font-semibold mb-4">Crear Nueva Obligación</h2>
+    <div className=" bg-white shadow-md rounded-md p-4 md:p-6">
 
       <div className="mb-4">
         <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">
@@ -105,7 +104,7 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
         <input
           type="text"
           id="nombre"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
           value={nombre}
           onChange={handleNombreChange}
         />
@@ -117,7 +116,7 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
         </label>
         <textarea
           id="descripcion"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
           value={descripcion}
           onChange={handleDescripcionChange}
         />
@@ -129,22 +128,22 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
         </label>
         <textarea
           id="observaciones"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
           value={observaciones}
           onChange={handleObservacionesChange}
         />
       </div>
 
       <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">Vencimientos por Terminación de CUIT</h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full border border-gray-200 text-sm md:text-base"> {/* Ajuste de tamaño de texto */}
+        <h3 className="text-lg font-semibold mb-2 text-left">Vencimientos por CUIT</h3>
+        <div className="overflow-x-auto w-full">
+          <table className="border border-gray-200 text-sm table-auto mx-0" style={{ minWidth: '800px' }}> {/* Ancho mínimo aún mayor */}
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b text-left">Mes</th>
+                <th className="py-2 px-3 border-b text-left w-[90px]">Mes/CUIT</th> {/* Ancho fijo para Mes */}
                 {terminacionesCuit.map(cuit => (
-                  <th key={cuit} className="py-2 px-2 md:px-4 border-b text-center"> {/* Padding horizontal responsivo */}
-                    Term. {cuit}
+                  <th key={cuit} className="py-2 px-3 border-b text-center w-[70px]"> {/* Ancho fijo para CUIT */}
+                     {cuit}
                   </th>
                 ))}
               </tr>
@@ -152,18 +151,20 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
             <tbody>
               {meses.map((mes, mesIndex) => (
                 <tr key={mesIndex}>
-                  <td className="py-2 px-4 border-b">{mes}</td>
+                  <td className="py-2 px-3 border-b">{mes}</td>
                   {terminacionesCuit.map(cuit => (
-                    <td key={cuit} className="py-2 px-2 md:px-4 border-b text-center"> {/* Padding horizontal responsivo */}
-                      <input
-                        type="number"
-                        min="1"
-                        max="31"
-                        className="shadow appearance-none border rounded w-16 md:w-20 py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center" 
-                        value={vencimientos.find(v => v.mes === mesIndex + 1 && v.terminacionCuit === cuit)?.dia || ''}
-                        onChange={(e) => handleVencimientoDiaChange(mesIndex + 1, cuit, e.target.value)}
-                        placeholder="Día"
-                      />
+                    <td key={cuit} className="py-2 px-3 border-b text-center">
+                      <div className="mx-auto w-full" style={{ maxWidth: '60px' }}> {/* Contenedor más ancho */}
+                        <input
+                          type="number"
+                          min="1"
+                          max="31"
+                          className="shadow appearance-none border rounded w-full py-2 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center text-sm" 
+                          value={vencimientos.find(v => v.mes === mesIndex + 1 && v.terminacionCuit === cuit)?.dia || ''}
+                          onChange={(e) => handleVencimientoDiaChange(mesIndex + 1, cuit, e.target.value)}
+                          placeholder="D"
+                        />
+                      </div>
                     </td>
                   ))}
                 </tr>
@@ -173,16 +174,21 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
         </div>
       </div>
 
-      {creationError && <p className="text-red-500 text-sm mb-2">{creationError}</p>}
+      {creationError && <p className="text-red-500 text-sm mb-2 text-left">{creationError}</p>}
 
-      <button
-        onClick={handleCrearObligacion}
-        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full md:w-auto" 
-        disabled={isCreating}
-      >
-        {isCreating ? 'Creando...' : <Plus className="inline-block mr-2" size={16} />}
-        {isCreating ? 'Creando Obligación' : 'Crear Obligación'}
-      </button>
+      <div className="flex justify-end w-full mt-4">
+        <button
+          onClick={handleCrearObligacion}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-sm w-full sm:w-auto max-w-[120px]"
+          disabled={isCreating}
+        >
+          {isCreating ? 'Creando' : (
+            <div className="flex items-center justify-center sm:justify-start">
+              <Plus className="mr-1 sm:mr-2" size={14} /> <span className="hidden sm:inline">Crear</span>
+            </div>
+          )}
+        </button>
+      </div>
     </div>
   );
 };

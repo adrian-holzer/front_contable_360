@@ -16,7 +16,6 @@ const NuevaObligacionPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-semibold mb-4">Crear Nueva Obligación</h1>
       <NuevaObligacion onObligacionCreated={handleObligacionCreated} onCreationError={handleCreationError} />
       <button
         onClick={() => navigate('/obligaciones')}
