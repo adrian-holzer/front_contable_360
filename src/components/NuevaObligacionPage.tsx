@@ -7,11 +7,10 @@ const NuevaObligacionPage: React.FC = () => {
 
   const handleObligacionCreated = () => {
     navigate('/obligaciones'); // Redirige a la página del listado
-    alert('Nueva obligación creada exitosamente.'); // O usa un sistema de notificación mejor
   };
 
   const handleCreationError = (error: string) => {
-    alert(`Error al crear la obligación: ${error}`); // O usa un sistema de notificación mejor
+
   };
 
   return (
