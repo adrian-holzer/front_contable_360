@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Eye, Plus, X, Search } from 'lucide-react'; // Importa el icono de Search
+import { Eye, Plus, X, Search, Edit } from 'lucide-react'; // Importa el icono de Search
 import { API_BASE_URL } from '../config/config';
 import CargarExcel from './CargarExcel';
 import NuevaObligacion from './NuevaObligacion'; // Importa NuevaObligacion
@@ -38,11 +38,13 @@ const ListaObligaciones: React.FC = () => {
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(''); // Estado para el término de búsqueda
   const [filteredObligaciones, setFilteredObligaciones] = useState<Obligacion[]>([]);
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
 
 
-
+  const handleEditarObligacionClick = (obligacionId: number) => {
+    navigate(`/obligaciones/${obligacionId}`); // Navega a la página de edición con el ID
+  };
 
   const fetchObligaciones = useCallback(async () => {
     setLoadingObligaciones(true);
@@ -60,10 +62,10 @@ const ListaObligaciones: React.FC = () => {
   }, []);
 
   const handleCrearNuevaObligacionClick = () => {
-   
-   navigate('/nueva-obligacion');
-   
-   
+
+    navigate('/nueva-obligacion');
+
+
     // Lógica para crear una nueva obligación (puedes usar navigate('/nueva-obligacion'))
   };
 
@@ -178,7 +180,7 @@ const ListaObligaciones: React.FC = () => {
       )}
 
       <div className="flex justify-between items-center mb-4">
-        
+
         <div className="relative rounded-md shadow-sm my-5">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <Search className="text-gray-400" size={16} />
@@ -197,7 +199,7 @@ const ListaObligaciones: React.FC = () => {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
           <Plus className="inline-block mr-2" size={16} />
-         Nueva
+          Nueva
         </button>
       </div>
 
@@ -222,6 +224,14 @@ const ListaObligaciones: React.FC = () => {
                 >
                   <Eye className="inline-block mr-2" size={16} />
                   Vencimientos
+                </button>
+
+                <button
+                  onClick={() => handleEditarObligacionClick(obligacion.id)}
+                  className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 m-3 rounded focus:outline-none focus:shadow-outline"
+                >
+                  <Edit className="inline-block" size={16} />
+                  Editar
                 </button>
               </td>
             </tr>

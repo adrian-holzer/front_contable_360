@@ -5,6 +5,7 @@ import Configuraciones from '../components/Configuraciones';
 import ListaObligaciones from '../components/ListaObligaciones';
 import NuevaObligacionPage from '../components/NuevaObligacionPage';
 import AsignarCliente from './AsignarCliente';
+import EditarObligacionWithNoSpinners from './EditarObligacion';
 
 export const AppRoutes = () => {
     return (
@@ -13,6 +14,7 @@ export const AppRoutes = () => {
             <Route path="/configuraciones" element={<Configuraciones />} />
             <Route path="/obligaciones" element={<ListaObligaciones />} />
             <Route path="/nueva-obligacion" element={<NuevaObligacionPage />} />
+            <Route path="/obligaciones/:id" element={<EditarObligacionWithNoSpinners />} />
 
             <Route path="/asignar-cliente" element={<AsignarCliente />} />
 
