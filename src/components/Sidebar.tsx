@@ -107,27 +107,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) =>
             } overflow-hidden`}
           >
             <button
-              onClick={() => navigateTo('/otro1')}
+              onClick={() => navigateTo('/cliente/asignar-obligaciones')}
               className={`flex items-center space-x-2 w-full p-3 rounded-lg ${
-                location.pathname === '/otro1' ? 'bg-teal-50 text-teal-600' : 'hover:bg-teal-100'
+                location.pathname === '/cliente/asignar-obligaciones' ? 'bg-teal-50 text-teal-600' : 'hover:bg-teal-100'
               }`}
             >
               <SendHorizontal size={20} />
               <span>Asignar Obligaciones</span>
             </button>
             <button
-              onClick={() => navigateTo('/otro2')}
+              onClick={() => navigateTo('/cliente/asignar-responsable')}
               className={`flex items-center space-x-2 w-full p-3 rounded-lg ${
-                location.pathname === '/otro2' ? 'bg-teal-50 text-teal-600' : 'hover:bg-teal-100'
+                location.pathname === '/cliente/asignar-responsable' ? 'bg-teal-50 text-teal-600' : 'hover:bg-teal-100'
               }`}
             >
               <SendHorizontal size={20} />
               <span>Asignar Responsable</span>
             </button>
             <button
-              onClick={() => navigateTo('/otro3')}
+              onClick={() => navigateTo('/asignaciones/listado')}
               className={`flex items-center space-x-2 w-full p-3 rounded-lg ${
-                location.pathname === '/otro3' ? 'bg-teal-50 text-teal-600' : 'hover:bg-teal-100'
+                location.pathname === '/asignaciones/listado' ? 'bg-teal-50 text-teal-600' : 'hover:bg-teal-100'
               }`}
             >
               <SendHorizontal size={20} />

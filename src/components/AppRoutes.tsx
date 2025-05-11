@@ -6,6 +6,9 @@ import ListaObligaciones from '../components/ListaObligaciones';
 import NuevaObligacionPage from '../components/NuevaObligacionPage';
 import AsignarCliente from './AsignarCliente';
 import EditarObligacionWithNoSpinners from './EditarObligacion';
+import AsignarObligaciones from './AsignarObligaciones';
+import AsignarResponsable from './AsignarResponsable';
+import ListadoAsignacionesVencimiento from './ListadoAsignacionesVencimiento';
 
 export const AppRoutes = () => {
     return (
@@ -15,6 +18,9 @@ export const AppRoutes = () => {
             <Route path="/obligaciones" element={<ListaObligaciones />} />
             <Route path="/nueva-obligacion" element={<NuevaObligacionPage />} />
             <Route path="/obligaciones/:id" element={<EditarObligacionWithNoSpinners />} />
+            <Route path="/cliente/asignar-obligaciones" element={<AsignarObligaciones />} />
+            <Route path="/cliente/asignar-responsable" element={<AsignarResponsable />} />
+            <Route path="/asignaciones/listado" element={<ListadoAsignacionesVencimiento />} />
 
             <Route path="/asignar-cliente" element={<AsignarCliente />} />
 
