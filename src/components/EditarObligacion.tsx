@@ -126,8 +126,22 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
   };
 
   const handleVencimientoDiaChange = (mes: number, terminacionCuit: number, value: string) => {
-    const parsedValue = parseInt(value);
-    const newValue = isNaN(parsedValue) ? null : Math.min(31, parsedValue);
+    let newValue: number | null;
+    const cleanedValue = value.replace(/[-+.,\s]/g, ''); // Excluye -, +, ., , y espacios
+
+    if (cleanedValue === "") {
+      newValue = null;
+    } else {
+      const parsedValue = parseInt(cleanedValue, 10);
+      if (isNaN(parsedValue)) {
+        newValue = null;
+      } else if (parsedValue > 31) {
+        newValue = 31;
+      } else {
+        newValue = parsedValue;
+      }
+    }
+
     const newVencimientos = vencimientos.map(v =>
       v.mes === mes && v.terminacionCuit === terminacionCuit ? { ...v, dia: newValue } : v
     );
@@ -158,10 +172,10 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
       return;
     }
 
-    if (!descripcion.trim()) {
+   /*  if (!descripcion.trim()) {
       setDescripcionError('La descripción es obligatoria.');
       return;
-    }
+    } */
 
     setIsUpdating(true);
     setUpdateError(null);
@@ -194,12 +208,12 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
         setIsUpdating(false);
       }
     } catch (error: any) {
-      console.error('Error al modificar la obligación:', error);
+      console.error('Error al modificar la obligación:', error.response.data);
       setIsUpdating(false);
-      setUpdateError('Error al modificar la obligación. Por favor, intenta nuevamente.');
+      setUpdateError(' Error al modificar la obligación. ' + error.response.data);
       setIsErrorMessageVisible(true);
       if (onUpdateError && error.response && error.response.data && error.response.data.message) {
-        onUpdateError(error.response.data.message);
+        onUpdateError(error.response.data);
       } else if (onUpdateError) {
         onUpdateError('Error desconocido al modificar la obligación.');
       }
@@ -223,7 +237,6 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
 
       {isErrorMessageVisible && (updateError || errorVencimientos) && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-md z-50 flex items-center justify-between" role="alert">
-          <strong className="font-bold">Error!</strong>
           <span className="block sm:inline">{updateError || errorVencimientos}</span>
           <button onClick={handleCloseErrorMessage} className="ml-4 focus:outline-none">
             <X className="h-4 w-4" />
@@ -272,13 +285,13 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
 
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2 text-left">Vencimientos por CUIT</h3>
-        <div className="overflow-x-auto w-full"> {/* Aseguramos que el contenedor de la tabla ocupe el ancho del contenedor principal */}
-          <table className="border border-gray-200 text-sm table-auto mx-0" style={{ minWidth: '600px' }}> {/* Aumentamos el minWidth de la tabla */}
+        <div className="overflow-x-auto w-full">
+          <table className="border border-gray-200 text-sm table-auto mx-0" style={{ minWidth: '600px' }}>
             <thead>
               <tr>
-                <th className="py-2 px-3 border-b text-left w-[120px]">Mes/CUIT</th> {/* Aumentamos el ancho de la columna Mes/CUIT */}
+                <th className="py-2 px-3 border-b text-left w-[120px]">Mes/CUIT</th>
                 {terminacionesCuit.map(cuit => (
-                  <th key={cuit} className="py-2 px-3 border-b text-center w-[80px]"> {/* Aumentamos el ancho de las columnas CUIT */}
+                  <th key={cuit} className="py-2 px-3 border-b text-center w-[80px]">
                     {cuit}
                   </th>
                 ))}
@@ -290,7 +303,7 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
                   <td className="py-2 px-3 border-b">{mes}</td>
                   {terminacionesCuit.map(cuit => (
                     <td key={cuit} className="py-2 px-3 border-b text-center">
-                      <div className="mx-auto w-full" style={{ maxWidth: '70px' }}> {/* Aumentamos el maxWidth del input */}
+                      <div className="mx-auto w-full" style={{ maxWidth: '70px' }}>
                         <input
                           type="number"
                           min="1"

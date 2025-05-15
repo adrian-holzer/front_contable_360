@@ -53,8 +53,22 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
   };
 
   const handleVencimientoDiaChange = (mes: number, terminacionCuit: number, value: string) => {
-    const parsedValue = parseInt(value);
-    const newValue = isNaN(parsedValue) ? null : Math.min(31, parsedValue);
+    let newValue: number | null;
+    const cleanedValue = value.replace(/[-+.,\s]/g, ''); // Excluye -, +, . , , y espacios
+
+    if (cleanedValue === "") {
+      newValue = null;
+    } else {
+      const parsedValue = parseInt(cleanedValue, 10);
+      if (isNaN(parsedValue)) {
+        newValue = null;
+      } else if (parsedValue > 31) {
+        newValue = 31;
+      } else {
+        newValue = parsedValue;
+      }
+    }
+
     const newVencimientos = vencimientos.map(v =>
       v.mes === mes && v.terminacionCuit === terminacionCuit ? { ...v, dia: newValue } : v
     );
@@ -83,10 +97,10 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
       return;
     }
 
-    if (!descripcion.trim()) {
+    /* if (!descripcion.trim()) {
       setDescripcionError('La descripción es obligatoria.');
       return;
-    }
+    } */
 
     setIsCreating(true);
     setCreationError(null);
@@ -119,7 +133,7 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
     } catch (error: any) {
       console.error('Error al crear la obligación:', error);
       setIsCreating(false);
-      setCreationError('Error al crear la obligación. Por favor, intenta nuevamente.');
+      setCreationError('Error al crear la obligación. Por favor, intenta nuevamente.' + error.response.data);
       setIsErrorMessageVisible(true); // Mostrar el mensaje de error flotante
       if (onCreationError && error.response && error.response.data && error.response.data.message) {
         onCreationError(error.response.data.message);
