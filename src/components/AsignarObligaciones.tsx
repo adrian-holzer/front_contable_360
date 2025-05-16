@@ -95,13 +95,13 @@ const AsignarObligaciones: React.FC = () => {
     useEffect(() => {
         const results = clientes.filter(cliente =>
             (cliente.nombre?.toLowerCase().includes(searchTermCliente.toLowerCase()) ||
-             cliente.razonSocial?.toLowerCase().includes(searchTermCliente.toLowerCase()) ||
-             cliente.cuit.includes(searchTermCliente))
+                cliente.razonSocial?.toLowerCase().includes(searchTermCliente.toLowerCase()) ||
+                cliente.cuit.includes(searchTermCliente))
         );
         setFilteredClientes(results);
     }, [searchTermCliente, clientes]);
 
-      useEffect(() => {
+    useEffect(() => {
         const results = obligaciones.filter(obligacion =>
             obligacion.nombre.toLowerCase().includes(searchTermObligacion.toLowerCase())
         );
@@ -115,10 +115,6 @@ const AsignarObligaciones: React.FC = () => {
     };
 
     const toggleObligacionSeleccionada = (idObligacion: number) => {
-        if (obligacionesAsignadasInicialmente.includes(idObligacion)) {
-            return; // No permitir deseleccionar las asignadas inicialmente
-        }
-
         if (obligacionesSeleccionadas.includes(idObligacion)) {
             setObligacionesSeleccionadas(obligacionesSeleccionadas.filter(id => id !== idObligacion));
         } else {
@@ -132,8 +128,7 @@ const AsignarObligaciones: React.FC = () => {
             return;
         }
 
-        // Enviar solo las obligaciones que NO estaban asignadas inicialmente Y están seleccionadas AHORA
-        const nuevasObligaciones = obligacionesSeleccionadas.filter(id => !obligacionesAsignadasInicialmente.includes(id));
+        const nuevasObligaciones = obligacionesSeleccionadas; // Cambiado para incluir todas las seleccionadas.
 
         const observacionToSend = observacion.trim() === '' ? '-' : observacion;
         const payload = {
@@ -151,10 +146,6 @@ const AsignarObligaciones: React.FC = () => {
             console.error('Error asignando obligaciones:', error);
             setMensaje('Error al asignar las obligaciones.');
         }
-    };
-
-    const isObligacionAsignadaInicialmente = (idObligacion: number) => {
-        return obligacionesAsignadasInicialmente.includes(idObligacion);
     };
 
     return (
@@ -272,9 +263,8 @@ const AsignarObligaciones: React.FC = () => {
                                                 <input
                                                     type="checkbox"
                                                     className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
-                                                    checked={obligacionesAsignadasInicialmente.includes(obligacion.id) || obligacionesSeleccionadas.includes(obligacion.id)}
+                                                    checked={obligacionesSeleccionadas.includes(obligacion.id)}
                                                     onChange={() => toggleObligacionSeleccionada(obligacion.id)}
-                                                    disabled={obligacionesAsignadasInicialmente.includes(obligacion.id)}
                                                 />
                                             </td>
                                         </tr>
@@ -287,7 +277,7 @@ const AsignarObligaciones: React.FC = () => {
 
                     {obligaciones.length > 0 && clienteSeleccionado && (
                         <div className="mt-4">
-                            
+                        
                             <button
                                 onClick={handleAsignarObligaciones}
                                 className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -299,6 +289,7 @@ const AsignarObligaciones: React.FC = () => {
                     )}
                 </div>
             )}
+
 
             {mensaje && <p className={`mt-4 font-semibold ${mensaje.startsWith('Error') ? 'text-red-500' : 'text-green-500'}`}>{mensaje}</p>}
         </div>

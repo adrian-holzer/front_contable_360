@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale'; // Importar locale para español
+import { es } from 'date-fns/locale';
 import { API_BASE_URL } from '../config/config';
 
 interface AsignacionVencimiento {
@@ -64,6 +64,9 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
     const [finalizando, setFinalizando] = useState(false); // Para el estado de carga del modal
     const [idClienteParaModal, setIdClienteParaModal] = useState<number | null>(null);
 
+    // Paginación
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(10); // Cantidad de items por página
 
     const fetchAsignacionesVencimiento = useCallback(async () => {
         setLoading(true);
@@ -224,6 +227,13 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
     // Obtener todos los usuarios únicos para el filtro de usuarios
     const usuariosUnicos = [...new Set(asignaciones.map(a => a.asignacion.cliente.usuarioResponsable?.idUsuario).filter(id => id !== undefined && id !== null))];
 
+    // Lógica para la paginación
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = asignacionesFiltradas.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Cambiar de página
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     if (loading) {
         return <div className="p-4">Cargando asignaciones...</div>;
@@ -306,7 +316,7 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
                 </button>
             </div>
 
-            {asignacionesFiltradas.length === 0 ? (
+            {currentItems.length === 0 && !loading ? (
                 <div className="p-4 text-gray-500">No hay asignaciones de vencimiento disponibles.</div>
             ) : (
                 <div className="overflow-x-auto">
@@ -323,7 +333,7 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {asignacionesFiltradas.map((asignacion) => (
+                            {currentItems.map((asignacion) => (
                                 <tr key={asignacion.idAsignacionVencimiento} className="hover:bg-gray-50">
                                     <td className="py-2 px-4 border-b">{asignacion.asignacion.obligacion.nombre}</td>
                                     <td className="py-2 px-4 border-b">{asignacion.asignacion.cliente.nombre}</td>
@@ -356,6 +366,21 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            )}
+
+            {/* Paginación */}
+            {asignacionesFiltradas.length > itemsPerPage && (
+                <div className="flex justify-center mt-4">
+                    {Array.from({ length: Math.ceil(asignacionesFiltradas.length / itemsPerPage) }, (_, i) => i + 1).map(pageNumber => (
+                        <button
+                            key={pageNumber}
+                            onClick={() => paginate(pageNumber)}
+                            className={`mx-1 px-3 py-1 rounded ${currentPage === pageNumber ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                        >
+                            {pageNumber}
+                        </button>
+                    ))}
                 </div>
             )}
 
@@ -395,11 +420,11 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
                                                     >
                                                         <option value="">Seleccione un contacto</option>
                                                         {
-                                                        contactos.map((contacto) => (
-                                                            <option key={contacto.idContacto} value={contacto.idContacto.toString()}>
-                                                                {contacto.nombre} ({contacto.correo})
-                                                            </option>
-                                                        ))}
+                                                            contactos.map((contacto) => (
+                                                                <option key={contacto.idContacto} value={contacto.idContacto.toString()}>
+                                                                    {contacto.nombre} ({contacto.correo})
+                                                                </option>
+                                                            ))}
                                                     </select>
                                                 </div>
                                                 <div>
