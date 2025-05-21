@@ -154,7 +154,7 @@ const AsignarResponsable: React.FC = () => {
 
     return (
         <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Asignar Responsable a Cliente</h2>
+            <h2 className="text-xl font-semibold mb-4">Asignar Responsable de Cliente</h2>
 
             <div className="mb-4">
                 <button

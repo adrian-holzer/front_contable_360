@@ -9,6 +9,7 @@ import EditarObligacionWithNoSpinners from './EditarObligacion';
 import AsignarObligaciones from './AsignarObligaciones';
 import AsignarResponsable from './AsignarResponsable';
 import ListadoAsignacionesVencimiento from './ListadoAsignacionesVencimiento';
+import ProximasAVencerPage from './ProximasAVencerPage';
 
 export const AppRoutes = () => {
     return (
@@ -23,6 +24,7 @@ export const AppRoutes = () => {
             <Route path="/asignaciones/listado" element={<ListadoAsignacionesVencimiento />} />
 
             <Route path="/asignar-cliente" element={<AsignarCliente />} />
+             <Route path="/proximas-a-vencer" element={<ProximasAVencerPage />} /> {/* Nueva ruta */}
 
             <Route path="/" element={<Operativo />} /> {/* Ruta por defecto */}
             {/* Otras rutas de tu aplicación */}

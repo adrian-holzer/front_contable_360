@@ -53,6 +53,7 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
     const [filtroFecha, setFiltroFecha] = useState<string | null>(null);
     const [filtroEstado, setFiltroEstado] = useState<string | null>(null);
     const [filtroUsuario, setFiltroUsuario] = useState<number | null>(null);
+const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
     // Estado para el modal de finalización
     const [modalOpen, setModalOpen] = useState(false);
@@ -122,7 +123,10 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
             setLoading(false);
         }
     };
-
+// Función para quitar un archivo de la lista
+const handleRemoveArchivo = (indexToRemove: number) => {
+    setArchivos(prevArchivos => prevArchivos.filter((_, index) => index !== indexToRemove));
+};
     // Función para manejar la finalización de la asignación
     const handleFinalizarAsignacion = async () => {
         if (!asignacionVencimientoId || !contactoSeleccionado || !observacion) {
@@ -192,12 +196,26 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
         }
     };
 
-    // Función para manejar la selección de archivos
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setArchivos(Array.from(e.target.files));
-        }
-    };
+    // Función para manejar la selección de archivos (modificada para acumular)
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+        const nuevosArchivosSeleccionados = Array.from(e.target.files);
+        setArchivos(prevArchivos => {
+            // Opcional: Filtrar para evitar duplicados basados en nombre y tamaño
+            const archivosParaAgregar = nuevosArchivosSeleccionados.filter(nuevo =>
+                !prevArchivos.some(existente =>
+                    existente.name === nuevo.name &&
+                    existente.size === nuevo.size &&
+                    existente.lastModified === nuevo.lastModified // Criterio más robusto
+                )
+            );
+            return [...prevArchivos, ...archivosParaAgregar];
+        });
+        // Resetear el valor del input para permitir seleccionar el mismo archivo
+        // si se quitó y se quiere volver a agregar, o agregar más archivos.
+        e.target.value = '';
+    }
+};
 
     // Filtrar las asignaciones basadas en los filtros seleccionados
     const asignacionesFiltradas = asignaciones.filter(asignacion => {
@@ -245,7 +263,7 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
 
     return (
         <div className="p-4">
-            <h2 className="text-2xl font-semibold mb-4">Listado de Asignaciones de Vencimiento</h2>
+            <h2 className="text-2xl font-semibold mb-4">Listado de Vencimiento</h2>
 
             {/* Filtros */}
             <div className="mb-4 flex flex-wrap gap-4 items-end">
@@ -385,134 +403,161 @@ const ListadoAsignacionesVencimiento: React.FC = () => {
             )}
 
             {/* Modal de Finalización */}
-            {modalOpen && (
-                <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        {/* Fondo del modal */}
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+           {/* Modal de Finalización */}
+{/* Modal de Finalización */}
+{modalOpen && (
+    <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                        {/* Contenido del modal */}
-                        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div className="sm:flex sm:items-start">
-                                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left sm:w-full">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                            Finalizar Asignación
-                                        </h3>
-                                        <div className="mt-2 w-full">
-                                            <p className="text-sm text-gray-500">
-                                                Ingrese los detalles para finalizar la asignación.
-                                            </p>
-                                        </div>
-                                        {loading && <div>Cargando...</div>}
-                                        {!loading && (
-                                            <div className="mt-4 w-full space-y-4">
-                                                <div>
-                                                    <label htmlFor="contacto" className="block text-sm font-medium text-gray-700">
-                                                        Contacto <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <select
-                                                        id="contacto"
-                                                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                                        value={contactoSeleccionado === null ? '' : contactoSeleccionado.toString()}
-                                                        onChange={(e) => setContactoSeleccionado(parseInt(e.target.value, 10))}
-                                                        disabled={loading}
-                                                    >
-                                                        <option value="">Seleccione un contacto</option>
-                                                        {
-                                                            contactos.map((contacto) => (
-                                                                <option key={contacto.idContacto} value={contacto.idContacto.toString()}>
-                                                                    {contacto.nombre} ({contacto.correo})
-                                                                </option>
-                                                            ))}
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="observacion" className="block text-sm font-medium text-gray-700">
-                                                        Observación <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <textarea
-                                                        id="observacion"
-                                                        value={observacion}
-                                                        onChange={(e) => setObservacion(e.target.value)}
-                                                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                                        placeholder="Ingrese una observación"
-                                                        disabled={loading}
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label htmlFor="archivos" className="block text-sm font-medium text-gray-700">
-                                                        Archivos
-                                                    </label>
-                                                    <input
-                                                        type="file"
-                                                        id="archivos"
-                                                        multiple
-                                                        onChange={handleFileChange}
-                                                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                                        disabled={loading}
-                                                    />
-                                                </div>
-                                                {archivos.length > 0 && (
-                                                    <div className="w-full">
-                                                        <label className="block text-sm font-medium text-gray-700">
-                                                            Archivos Adjuntos:
-                                                        </label>
-                                                        <div className="mt-1 space-y-1">
-                                                            {archivos.map((archivo, index) => (
-                                                                <div key={index} className="flex items-center gap-2">
-                                                                    <span>Archivo:</span>
-                                                                    <span className="text-sm text-gray-700 truncate max-w-[200px]">{archivo.name}</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div className="sm:flex sm:items-start">
+                        <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left sm:w-full">
+                            <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Finalizar Asignación
+                            </h3>
+                            <div className="mt-2 w-full">
+                                <p className="text-sm text-gray-500">
+                                    Ingrese los detalles para finalizar la asignación.
+                                </p>
+                            </div>
+
+                            {/* Estado de carga de contactos */}
+                            {loading && <div className="mt-4 text-center">Cargando datos del contacto...</div>}
+
+                            {/* Formulario del modal (se muestra cuando no está cargando contactos) */}
+                            {!loading && (
+                                <div className="mt-4 w-full space-y-4">
+                                    <div>
+                                        <label htmlFor="contacto" className="block text-sm font-medium text-gray-700">
+                                            Contacto <span className="text-red-500">*</span>
+                                        </label>
+                                        <select
+                                            id="contacto"
+                                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                            value={contactoSeleccionado === null ? '' : contactoSeleccionado.toString()}
+                                            onChange={(e) => setContactoSeleccionado(parseInt(e.target.value, 10))}
+                                            disabled={finalizando}
+                                        >
+                                            <option value="">Seleccione un contacto</option>
+                                            {contactos.map((contacto) => (
+                                                <option key={contacto.idContacto} value={contacto.idContacto.toString()}>
+                                                    {contacto.nombre} ({contacto.correo})
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <button
-                                    type="submit"
-                                    className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200
-                                        ${finalizando ? 'bg-gray-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
-                                    onClick={handleFinalizarAsignacion}
-                                    disabled={finalizando || !contactoSeleccionado || !observacion}
+                                    <div>
+                                        <label htmlFor="observacion" className="block text-sm font-medium text-gray-700">
+                                            Observación <span className="text-red-500">*</span>
+                                        </label>
+                                        <textarea
+                                            id="observacion"
+                                            value={observacion}
+                                            onChange={(e) => setObservacion(e.target.value)}
+                                            rows={3}
+                                            className="mt-1 block w-full pl-3 pr-3 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                            placeholder="Ingrese una observación"
+                                            disabled={finalizando}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="archivos" className="block text-sm font-medium text-gray-700">
+                                            Adjuntar Archivos
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="archivos"
+                                            multiple
+                                            onChange={handleFileChange}
+                                            className="mt-1 block w-full text-sm text-slate-500
+                                                file:mr-4 file:py-2 file:px-4
+                                                file:rounded-md file:border-0
+                                                file:text-sm file:font-semibold
+                                                file:bg-indigo-50 file:text-indigo-700
+                                                hover:file:bg-indigo-100"
+                                            disabled={finalizando}
+                                        />
+                                    </div>
 
-                                >
-                                    {finalizando ? (
-                                        <>
-                                            <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            Finalizando...
-                                        </>
-                                    ) : (
-                                        "Finalizar"
+                                    {/* Lista de archivos adjuntos */}
+                                    {archivos.length > 0 && (
+                                        <div className="w-full">
+                                            <label className="block text-sm font-medium text-gray-700">
+                                                Archivos Adjuntos ({archivos.length}):
+                                            </label>
+                                            <div className="mt-1 space-y-2 max-h-48 overflow-y-auto border border-gray-200 rounded-md p-2">
+                                                {archivos.map((archivo, index) => (
+                                                    <div
+                                                        key={index + '-' + archivo.name + '-' + archivo.lastModified} // Clave más única
+                                                        className="flex items-center justify-between p-2 bg-gray-50 rounded-md text-sm"
+                                                    >
+                                                        <span className="text-gray-700 truncate" title={archivo.name}>
+                                                            {archivo.name} ({ (archivo.size / 1024).toFixed(1) } KB)
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleRemoveArchivo(index)}
+                                                            className="ml-2 text-red-500 hover:text-red-700 font-medium"
+                                                            aria-label={`Quitar ${archivo.name}`}
+                                                            disabled={finalizando}
+                                                        >
+                                                            Quitar
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     )}
-                                </button>
-                                <button
-                                    type="button"
-                                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 text-base font-medium text-gray-700 bg-white hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                                    onClick={() => {
-                                        setModalOpen(false);
-                                        setContactoSeleccionado(null);
-                                        setObservacion('');
-                                        setArchivos([]);
-                                        setIdClienteParaModal(null);
-                                    }}
-                                    disabled={finalizando}
-                                >
-                                    Cancelar
-                                </button>
-                            </div>
+                                </div>
+                            )}
+                            {error && <div className="mt-3 text-sm text-red-600 bg-red-100 p-2 rounded-md">{error}</div>}
                         </div>
                     </div>
                 </div>
-            )}
+                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button
+                        type="button"
+                        className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200
+                            ${finalizando || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+                        onClick={handleFinalizarAsignacion}
+                        disabled={finalizando || loading || !contactoSeleccionado || !observacion.trim()}
+                    >
+                        {finalizando ? (
+                            <>
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Finalizando...
+                            </>
+                        ) : (
+                            "Finalizar"
+                        )}
+                    </button>
+                    <button
+                        type="button"
+                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                        onClick={() => {
+                            setModalOpen(false);
+                            setContactoSeleccionado(null);
+                            setObservacion('');
+                            setArchivos([]);
+                            setIdClienteParaModal(null);
+                            setError(null); // Limpiar errores del modal
+                        }}
+                        disabled={finalizando}
+                    >
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
+
         </div>
     );
 };

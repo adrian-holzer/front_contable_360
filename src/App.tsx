@@ -3,6 +3,7 @@ import Login from './components/Login';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { NotificationProvider } from './context/NotificationContext';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,21 +25,25 @@ function App() {
 
     return (
         <Router>
-            <div className="min-h-screen bg-gray-50 flex">
-                <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-                <MainContent
-                    isSidebarOpen={isSidebarOpen}
-                    setIsSidebarOpen={setIsSidebarOpen}
-                    handleLogout={handleLogout}
-                />
-                {/* Overlay para el Sidebar */}
-                {isSidebarOpen && (
-                    <div
-                        className="fixed inset-0 bg-black bg-opacity-50 z-20"
-                        onClick={() => setIsSidebarOpen(false)}
+            <NotificationProvider> {/* Envuelve tu aplicación con el proveedor */}
+
+                <div className="min-h-screen bg-gray-50 flex">
+                    <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+                    <MainContent
+                        isSidebarOpen={isSidebarOpen}
+                        setIsSidebarOpen={setIsSidebarOpen}
+                        handleLogout={handleLogout}
                     />
-                )}
-            </div>
+                    {/* Overlay para el Sidebar */}
+                    {isSidebarOpen && (
+                        <div
+                            className="fixed inset-0 bg-black bg-opacity-50 z-20"
+                            onClick={() => setIsSidebarOpen(false)}
+                        />
+                    )}
+                </div>
+            </NotificationProvider>
+
         </Router>
     );
 }

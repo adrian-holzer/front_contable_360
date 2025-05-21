@@ -152,9 +152,19 @@ const AsignarObligaciones: React.FC = () => {
         <div className="p-6">
             <h2 className="text-xl font-semibold mb-4">Asignar Obligaciones</h2>
 
+            {/* Botón para abrir el modal de clientes cuando no está visible y no hay un cliente seleccionado */}
+            {!modalClientesVisible && !clienteSeleccionado && (
+                <button
+                    onClick={() => setModalClientesVisible(true)}
+                    className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                    Seleccionar Cliente
+                </button>
+            )}
+
             {modalClientesVisible && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
-                    <div className="bg-white rounded-md shadow-lg p-6 w-full max-w-md">
+                    <div className="bg-white rounded-md shadow-lg p-6 w-full max-w-xl"> {/* Cambiado de max-w-md a max-w-xl */}
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">Seleccionar Cliente</h3>
                             <button onClick={() => setModalClientesVisible(false)} className="text-gray-500 hover:text-gray-700">
@@ -277,7 +287,6 @@ const AsignarObligaciones: React.FC = () => {
 
                     {obligaciones.length > 0 && clienteSeleccionado && (
                         <div className="mt-4">
-                        
                             <button
                                 onClick={handleAsignarObligaciones}
                                 className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
