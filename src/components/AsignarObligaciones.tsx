@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Plus, X, Search } from 'lucide-react';
 import { API_BASE_URL } from '../config/config';
+import { useNotifications } from '../context/NotificationContext'; // Importar el hook de notificaciones
 
 interface Cliente {
     idCliente: number;
@@ -41,6 +42,7 @@ const AsignarObligaciones: React.FC = () => {
     const [filteredClientes, setFilteredClientes] = useState<Cliente[]>([]);
     const [searchTermObligacion, setSearchTermObligacion] = useState<string>('');
     const [filteredObligaciones, setFilteredObligaciones] = useState<Obligacion[]>([]);
+    const { fetchNotifications } = useNotifications(); // Usar el hook de notificaciones
 
     const fetchClientes = useCallback(async () => {
         setLoadingClientes(true);
@@ -141,6 +143,7 @@ const AsignarObligaciones: React.FC = () => {
             await axios.post(`${API_BASE_URL}/api/asignaciones`, payload);
             setMensaje('Obligaciones asignadas correctamente.');
             fetchAsignacionesCliente(clienteSeleccionado.idCliente); // Refrescar asignaciones
+            fetchNotifications()
             setObservacion('');
         } catch (error: any) {
             console.error('Error asignando obligaciones:', error);

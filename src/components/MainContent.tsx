@@ -8,6 +8,7 @@ interface MainContentProps {
     isSidebarOpen: boolean;
     setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
     handleLogout: () => void;
+    
 }
 
 const MainContent: React.FC<MainContentProps> = ({ isSidebarOpen, setIsSidebarOpen, handleLogout }) => {

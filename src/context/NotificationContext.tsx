@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../config/config';
 
 interface AsignacionVencimientoProxima {
+    idAsignacionVencimiento: number;
     id: number;
     vencimiento: {
         fechaVencimiento: string;

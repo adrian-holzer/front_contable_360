@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Plus, X } from 'lucide-react';
 import { API_BASE_URL } from '../config/config';
+import { useNotifications } from '../context/NotificationContext';
 
 interface NuevaObligacionProps {
   onObligacionCreated?: () => void;
@@ -37,6 +38,7 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
   const [descripcionError, setDescripcionError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+    const { fetchNotifications } = useNotifications(); // Usar el hook de notificaciones
 
   const handleNombreChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNombre(event.target.value);
@@ -129,6 +131,7 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
         )
       );
       setSuccessMessage('Obligación creada exitosamente.');
+      fetchNotifications()
       setIsSuccessMessageVisible(true);
     } catch (error: any) {
       console.error('Error al crear la obligación:', error);

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Plus, X, ArrowLeft } from 'lucide-react';
 import { API_BASE_URL } from '../config/config';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useNotifications } from '../context/NotificationContext';
 
 interface EditarObligacionProps {
   onObligacionUpdated?: () => void;
@@ -58,6 +59,7 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
   const [loadingObligacion, setLoadingObligacion] = useState(true);
   const [loadingVencimientos, setLoadingVencimientos] = useState(true);
   const [errorVencimientos, setErrorVencimientos] = useState<string | null>(null);
+    const { fetchNotifications } = useNotifications(); // Usar el hook de notificaciones
 
   const fetchObligacion = useCallback(async () => {
     if (obligacionId) {
@@ -198,6 +200,7 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
         setIsUpdating(false);
         setSuccessMessage('Obligación modificada exitosamente.');
         setIsSuccessMessageVisible(true);
+        fetchNotifications()
         if (onObligacionUpdated) {
           onObligacionUpdated();
         }

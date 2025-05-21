@@ -3,6 +3,7 @@ import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { API_BASE_URL } from '../config/config';
+import { useNotifications } from '../context/NotificationContext';
 
 interface AsignacionVencimiento {
     idAsignacionVencimiento: number;
@@ -64,10 +65,16 @@ const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
     const [archivos, setArchivos] = useState<File[]>([]);
     const [finalizando, setFinalizando] = useState(false); // Para el estado de carga del modal
     const [idClienteParaModal, setIdClienteParaModal] = useState<number | null>(null);
+    const [filtroNombreCliente, setFiltroNombreCliente] = useState<string | null>(null); // MODIFICACIÓN
 
     // Paginación
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10); // Cantidad de items por página
+
+    const { fetchNotifications } = useNotifications(); // Usar el hook de notificaciones
+
+
+
 
     const fetchAsignacionesVencimiento = useCallback(async () => {
         setLoading(true);
@@ -149,6 +156,11 @@ const handleRemoveArchivo = (indexToRemove: number) => {
             if (updateResponse.status !== 200) {
                 throw new Error("No se pudo actualizar el estado de la asignación.");
             }
+            else{
+             fetchNotifications()
+
+            }
+
 
             // 2. Enviar la notificación por correo electrónico (incluyendo archivos)
             const formData = new FormData();
@@ -180,6 +192,8 @@ const handleRemoveArchivo = (indexToRemove: number) => {
                         ? { ...asignacion, estado: 'FINALIZADO', fechaFinalizacion: new Date().toISOString() }
                         : asignacion
                 )
+
+                
             );
 
             // Cerrar el modal y resetear el estado del modal
@@ -223,6 +237,8 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let cumpleFiltroFecha = true;
         let cumpleFiltroEstado = true;
         let cumpleFiltroUsuario = true;
+        let cumpleFiltroNombreCliente = true; // MODIFICACIÓN
+
 
         if (filtroCuit) {
             cumpleFiltroCuit = asignacion.asignacion.cliente.cuit.toString().startsWith(filtroCuit.toString());
@@ -238,8 +254,11 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (filtroUsuario) {
             cumpleFiltroUsuario = asignacion.asignacion.cliente.usuarioResponsable?.idUsuario === filtroUsuario;
         }
-
-        return cumpleFiltroCuit && cumpleFiltroFecha && cumpleFiltroEstado && cumpleFiltroUsuario;
+// Nueva condición para filtrar por nombre de cliente
+    if (filtroNombreCliente) { // MODIFICACIÓN
+        cumpleFiltroNombreCliente = asignacion.asignacion.cliente.nombre.toLowerCase().includes(filtroNombreCliente.toLowerCase()); // MODIFICACIÓN
+    }
+        return cumpleFiltroCuit && cumpleFiltroFecha && cumpleFiltroEstado && cumpleFiltroUsuario && cumpleFiltroNombreCliente;
     });
 
     // Obtener todos los usuarios únicos para el filtro de usuarios
@@ -267,6 +286,16 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
             {/* Filtros */}
             <div className="mb-4 flex flex-wrap gap-4 items-end">
+                 <div>
+        <label htmlFor="filtro-nombre-cliente" className="block text-sm font-medium text-gray-700">Filtrar por Cliente</label>
+        <input
+            type="text"
+            id="filtro-nombre-cliente"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            value={filtroNombreCliente || ''}
+            onChange={(e) => setFiltroNombreCliente(e.target.value || null)}
+        />
+    </div> {/* MODIFICACIÓN */}
                 <div>
                     <label htmlFor="filtro-cuit" className="block text-sm font-medium text-gray-700">Filtrar por CUIT</label>
                     <input
@@ -326,6 +355,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                         setFiltroFecha(null);
                         setFiltroEstado(null);
                         setFiltroUsuario(null);
+                         setFiltroNombreCliente(null); 
 
                     }}
                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"

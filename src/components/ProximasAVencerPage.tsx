@@ -6,10 +6,12 @@ interface AsignacionVencimientoProxima {
     vencimiento: {
         fechaVencimiento: string;
     };
+    idAsignacionVencimiento:number;
     asignacion: {
         obligacion: {
             nombre: string;
         };
+        
         cliente: {
             nombre: string;
         };
@@ -56,7 +58,6 @@ const ProximasAVencerPage: React.FC = () => {
 
     return (
         <div className="p-6">
-            <h2 className="text-xl font-bold mb-4">Asignaciones Próximas a Vencer</h2>
             {proximasAVencer.length === 0 ? (
                 <p>No hay asignaciones que venzan en los próximos 10 días.</p>
             ) : (
