@@ -168,7 +168,6 @@ const MainContent: React.FC<MainContentProps> = ({ isSidebarOpen, setIsSidebarOp
 
             {/* Notification Panel (Fixed Bottom) */}
             {isNotificationsOpen && (
-                //                                                                                                    AÑADIDA LA CLASE AQUÍ 👇
                 <div className="fixed bottom-4 right-4 w-80 bg-white rounded-lg shadow-xl z-50 overflow-hidden max-h-96 border border-gray-200 main-notification-panel">
                     <h2 className="p-3 bg-gray-100 text-gray-800 font-semibold flex justify-between items-center">
                         Notificaciones
