@@ -44,7 +44,6 @@ const CargarExcel: React.FC<CargarExcelProps> = ({ onUploadSuccess, onUploadErro
         },
       });
 
-      console.log('Archivo subido exitosamente:', response.data);
       setUploading(false);
       setSelectedFile(null);
       setFileName(null); // Resetea el nombre del archivo después de la carga

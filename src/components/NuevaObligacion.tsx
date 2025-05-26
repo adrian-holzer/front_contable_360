@@ -120,7 +120,6 @@ const NuevaObligacion: React.FC<NuevaObligacionProps> = ({ onObligacionCreated, 
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/obligaciones`, nuevaObligacionData);
-      console.log('Obligación creada exitosamente:', response.data);
       setIsCreating(false);
       setNombre('');
       setDescripcion('');

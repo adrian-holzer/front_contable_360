@@ -1,16 +1,18 @@
+// src/AppRoutes.tsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Operativo from '../components/Operativo';
 import Configuraciones from '../components/Configuraciones';
 import ListaObligaciones from '../components/ListaObligaciones';
 import NuevaObligacionPage from '../components/NuevaObligacionPage';
-import AsignarCliente from './AsignarCliente';
-import EditarObligacionWithNoSpinners from './EditarObligacion';
-import AsignarObligaciones from './AsignarObligaciones';
-import AsignarResponsable from './AsignarResponsable';
-import ListadoAsignacionesVencimiento from './ListadoAsignacionesVencimiento';
-import ProximasAVencerPage from './ProximasAVencerPage';
+import AsignarCliente from './AsignarCliente'; // Revisa esta ruta si no es correcta
+import EditarObligacionWithNoSpinners from './EditarObligacion'; // Revisa esta ruta
+import AsignarObligaciones from './AsignarObligaciones'; // Revisa esta ruta
+import AsignarResponsable from './AsignarResponsable'; // Revisa esta ruta
+import ListadoAsignacionesVencimiento from './ListadoAsignacionesVencimiento'; // Revisa esta ruta
+import ProximasAVencerPage from './ProximasAVencerPage'; // Revisa esta ruta
 
+// Aquí también puedes quitar React.FC si te da error
 export const AppRoutes = () => {
     return (
         <Routes>
@@ -24,7 +26,7 @@ export const AppRoutes = () => {
             <Route path="/asignaciones/listado" element={<ListadoAsignacionesVencimiento />} />
 
             <Route path="/asignar-cliente" element={<AsignarCliente />} />
-             <Route path="/proximas-a-vencer" element={<ProximasAVencerPage />} /> {/* Nueva ruta */}
+            <Route path="/proximas-a-vencer" element={<ProximasAVencerPage />} /> 
 
             <Route path="/" element={<Operativo />} /> {/* Ruta por defecto */}
             {/* Otras rutas de tu aplicación */}

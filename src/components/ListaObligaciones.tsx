@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../config/config';
 import CargarExcel from './CargarExcel';
 import NuevaObligacion from './NuevaObligacion';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { useNotifications } from '../context/NotificationContext';
 
 interface VencimientoData {
     id: number;
@@ -41,6 +42,7 @@ const ListaObligaciones: React.FC = () => {
     const navigate = useNavigate();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [obligacionToDelete, setObligacionToDelete] = useState<number | null>(null);
+    const { fetchNotifications } = useNotifications(); // Usar el hook de notificaciones
 
     const handleEditarObligacionClick = (obligacionId: number) => {
         navigate(`/obligaciones/${obligacionId}`);
@@ -155,6 +157,7 @@ const ListaObligaciones: React.FC = () => {
     const handleDeleteObligacion = (id: number) => {
         setObligacionToDelete(id);
         setShowDeleteModal(true);
+
     };
 
     const confirmDeleteObligacion = async () => {
@@ -164,6 +167,7 @@ const ListaObligaciones: React.FC = () => {
                 await fetchObligaciones();
                 setShowDeleteModal(false);
                 setObligacionToDelete(null);
+                fetchNotifications();
             } catch (error: any) {
                 console.error("Error deleting obligacion:", error);
                 alert("Ocurrió un error al eliminar la obligación. Por favor, intente nuevamente.");

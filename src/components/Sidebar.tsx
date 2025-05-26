@@ -140,7 +140,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) =>
 
           </div>
 
-          
+          {/* 
           <button
             onClick={handleConfigClick}
             className={`flex items-center space-x-2 w-full p-3 rounded-lg ${
@@ -153,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) =>
               className={`ml-auto transition-transform ${isConfigMenuOpen ? 'rotate-180' : ''}`}
               size={16}
             />
-          </button>
+          </button> */}
 
           {/* Submenu Configuraciones */}
           <div

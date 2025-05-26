@@ -21,7 +21,7 @@ interface AsignacionVencimientoProxima {
     // ... otras propiedades
 }
 
-const ProximasAVencerPage: React.FC = () => {
+const ProximasAVencerPage = () => {
     const [proximasAVencer, setProximasAVencer] = useState<AsignacionVencimientoProxima[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -36,9 +36,8 @@ const ProximasAVencerPage: React.FC = () => {
             }
             const data: AsignacionVencimientoProxima[] = await response.json();
             setProximasAVencer(data);
-            console.log(data);
         } catch (e: any) {
-            setError(e.message);
+            setError("No hay asignaciones con vencimientos en los próximos 10 días.");
         } finally {
             setLoading(false);
         }
@@ -53,13 +52,13 @@ const ProximasAVencerPage: React.FC = () => {
     }
 
     if (error) {
-        return <div className="text-red-500">Error al cargar las asignaciones: {error}</div>;
+        return <div className="text-red-500">No hay asignaciones con vencimientos en los próximos 10 días.</div>;
     }
 
     return (
         <div className="p-6">
             {proximasAVencer.length === 0 ? (
-                <p>No hay asignaciones que venzan en los próximos 10 días.</p>
+                <p>No hay asignaciones con vencimientos en los próximos 10 días.</p>
             ) : (
                 <ul className="space-y-4">
                     {proximasAVencer.map(asignacion => (

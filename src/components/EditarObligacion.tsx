@@ -196,7 +196,6 @@ const EditarObligacion: React.FC<EditarObligacionProps> = ({ onObligacionUpdated
     try {
       if (obligacionId) {
         const response = await axios.put(`${API_BASE_URL}/api/obligaciones/${obligacionId}`, obligacionData);
-        console.log('Obligación modificada exitosamente:', response.data);
         setIsUpdating(false);
         setSuccessMessage('Obligación modificada exitosamente.');
         setIsSuccessMessageVisible(true);

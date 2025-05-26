@@ -79,7 +79,6 @@ const AsignarResponsable: React.FC = () => {
 
         try {
             const response = await axios.get<AsignacionResponsable[]>(`${API_BASE_URL}/api/asignaciones/cliente/${idCliente}`);
-            console.log("Respuesta de asignaciones:", response.data);
             setAsignaciones(response.data);
         } catch (error: any) {
             console.error("Error fetching asignaciones del cliente:", error);
@@ -192,7 +191,8 @@ const AsignarResponsable: React.FC = () => {
                 disabled={!usuarioSeleccionado || !clienteSeleccionado}
             >
                 <CheckCircle className="inline-block mr-2" size={16} />
-                Asignar Responsable
+                                   Asignar 
+
             </button>
 
             {mensaje && <p className={`mt-4 font-semibold ${mensaje.startsWith('Error') ? 'text-red-500' : 'text-green-500'}`}>{mensaje}</p>}

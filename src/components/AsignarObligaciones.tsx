@@ -80,7 +80,6 @@ const AsignarObligaciones: React.FC = () => {
             setObligacionesAsignadasInicialmente(asignadasIds);
             // Inicialmente, las obligaciones seleccionadas son las que ya están asignadas
             setObligacionesSeleccionadas(asignadasIds);
-            console.log("Obligaciones asignadas inicialmente:", asignadasIds); // Para debugging
         } catch (error: any) {
             console.error("Error fetching asignaciones del cliente:", error);
             setMensaje("Error al cargar las asignaciones del cliente.");
@@ -294,8 +293,9 @@ const AsignarObligaciones: React.FC = () => {
                                 onClick={handleAsignarObligaciones}
                                 className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             >
-                                <Plus className="inline-block mr-2" size={16} />
-                                Asignar Obligaciones
+                                   Asignar
+
+                                <Plus className="inline-block mx-2" size={16} />
                             </button>
                         </div>
                     )}

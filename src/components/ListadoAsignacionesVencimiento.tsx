@@ -121,7 +121,6 @@ const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
             // Obtener los contactos del cliente
             const response = await axios.get<Contacto[]>(`${API_BASE_URL}/api/contactos/cliente/${idCliente}`);
 
-            console.log(response.data);
             setContactos(response.data);
         } catch (error: any) {
             console.error("Error fetching contactos:", error);
@@ -282,7 +281,6 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     return (
         <div className="p-4">
-            <h2 className="text-2xl font-semibold mb-4">Listado de Vencimiento</h2>
 
             {/* Filtros */}
             <div className="mb-4 flex flex-wrap gap-4 items-end">
